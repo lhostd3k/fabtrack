@@ -101,9 +101,7 @@ async function init() {
   } catch (err) {
     console.error("❌ Error creating tables:", err.message);
     process.exit(1);
-  } finally {
-    await pool.end();
-  }
+// remove the pool.end()
 }
 
-init();
+module.exports = init;
