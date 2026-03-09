@@ -3,7 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-
+const initDB = require("./db/init");
+const seedDB = require("./db/seed");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -45,12 +46,21 @@ app.use((err, req, res, next) => {
 });
 
 // ── Start ──
-app.listen(PORT, () => {
-  console.log(`
-  ╔═══════════════════════════════════════╗
-  ║  FabTrack Server                      ║
-  ║  Running on port ${PORT}                 ║
-  ║  ${process.env.NODE_ENV || "development"} mode                  ║
-  ╚═══════════════════════════════════════╝
-  `);
-});
+async function startServer() {
+  try {
+    await initDB();
+    await seedDB();
+
+    app.listen(PORT, () => {
+      console.log(`
+FabTrack Server
+Running on port ${PORT}
+${process.env.NODE_ENV || "development"} mode
+`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+  }
+}
+
+startServer();
